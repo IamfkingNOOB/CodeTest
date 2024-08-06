@@ -1,14 +1,119 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
 namespace Player
 {
-    // 플레이어의 데이터를 다루는 클래스
-    public class PlayerData
+    // 발키리의 데이터를 다루는 클래스
+    public class ValkyrieData
     {
-        #region 변수 및 프로퍼티
+        #region 변수 및 프로퍼티 (기본 데이터)
 
-        // 플레이어의 현재 체력(HP)
+        // 식별자
+        public int ValkyrieID { get; private set; } // 식별자(ID)
+        public string CharacterName { get; private set; } // 캐릭터 이름
+        public string SuitName { get; private set; } // 슈트 이름
+
+        // 속성
+        public EntityType Type { get; private set; } // 속성
+        public List<ValkyrieTrait> Traits { get; private set; } = new(); // 특성
+
+        // 발키리의 랭크(Rank)
+        private int _rank;
+        public int Rank
+        {
+            get => _rank;
+            private set
+            {
+                _rank = value;
+                OnPropertyChanged(nameof(Rank));
+            }
+        }
+
+        // 발키리의 레벨(Level)
+        private int _level;
+        public int Level
+        {
+            get => _level;
+            private set
+            {
+                _level = value;
+                OnPropertyChanged(nameof(Level));
+            }
+        }
+
+        // 발키리의 무기 종류
+        public WeaponType EquipableWeaponType { get; private set; }
+
+        // 발키리의 무기
+        private Weapon _weaponID;
+        public Weapon WeaponID
+        {
+            get => _weaponID;
+            private set
+            {
+                _weaponID = value;
+                OnPropertyChanged(nameof(WeaponID));
+            }
+        }
+
+        // 발키리의 성흔(상)
+        private Stigmata _stigmataTopID;
+        public Stigmata StigmataTopID
+        {
+            get => _stigmataTopID;
+            private set
+            {
+                _stigmataTopID = value;
+                OnPropertyChanged(nameof(_stigmataTopID));
+            }
+        }
+
+        // 발키리의 성흔(중)
+        private Stigmata _stigmataMiddleID;
+        public Stigmata StigmataMiddleID
+        {
+            get => _stigmataMiddleID;
+            private set
+            {
+                _stigmataMiddleID = value;
+                OnPropertyChanged(nameof(_stigmataMiddleID));
+            }
+        }
+
+        // 발키리의 성흔(하)
+        private Stigmata _stigmataBottomID;
+        public Stigmata StigmataBottomID
+        {
+            get => _stigmataBottomID;
+            private set
+            {
+                _stigmataBottomID = value;
+                OnPropertyChanged(nameof(_stigmataBottomID));
+            }
+        }
+
+        // 발키리의 스킬
+        public string LeaderSkill { get; private set; }
+        public string Passive { get; private set; }
+        public string Evasion { get; private set; }
+        public string WeaponSkill { get; private set; }
+        public string BasicATK { get; private set; }
+        public string Ultimate { get; private set; }
+        public string SpecialATK { get; private set; }
+
+        // 발키리의 설명
+        public string Description { get; private set; }
+
+        // 발키리의 에셋
+        public Sprite Portrait { get; private set; } // 초상화
+        public GameObject Model { get; private set; } // 모델(프리팹)
+
+        #endregion 변수 및 프로퍼티 (기본 데이터)
+
+        #region 변수 및 프로퍼티 (플레이 요소)
+
+        // 발키리의 현재 체력(HP)
         private int _currentHP;
         public int CurrentHP
         {
@@ -20,19 +125,19 @@ namespace Player
             }
         }
 
-        // 플레이어의 최대 체력
+        // 발키리의 최대 체력
         private int _maxHP;
         public int MaxHP
         {
             get => _maxHP;
-            set
+            private set
             {
                 _maxHP = value;
                 OnPropertyChanged(nameof(MaxHP));
             }
         }
 
-        // 플레이어의 현재 기력(SP)
+        // 발키리의 현재 기력(SP)
         private int _currentSP;
         public int CurrentSP
         {
@@ -44,7 +149,7 @@ namespace Player
             }
         }
 
-        // 플레이어의 최대 기력
+        // 발키리의 최대 기력
         private int _maxSP;
         public int MaxSP
         {
@@ -56,7 +161,7 @@ namespace Player
             }
         }
 
-        // 플레이어의 공격력(ATK)
+        // 발키리의 공격력(ATK)
         private int _atk;
         public int ATK
         {
@@ -68,7 +173,7 @@ namespace Player
             }
         }
 
-        // 플레이어의 방어력(DEF)
+        // 발키리의 방어력(DEF)
         private int _def;
         public int DEF
         {
@@ -80,7 +185,7 @@ namespace Player
             }
         }
 
-        // 플레이어의 회심(CRT)
+        // 발키리의 회심(CRT)
         private int _crt;
         public int CRT
         {
@@ -104,22 +209,12 @@ namespace Player
             }
         }
 
-        // 기타 변수들…
-
-        // 캐릭터의 모델 (프리팹)
-        private GameObject _model;
-        public GameObject Model
-        {
-            get => _model;
-            set => _model = value;
-        }
-
-        #endregion 변수 및 프로퍼티
+        #endregion 변수 및 프로퍼티 (플레이 요소)
 
         #region 생성자
 
         // 생성자 시점에서 변수를 초기화한다.
-        public PlayerData(int hp, int sp, int atk, int def, int crt, int ultimateCost)
+        public ValkyrieData(int hp, int sp, int atk, int def, int crt, int ultimateCost)
         {
             _currentHP = _maxHP = hp; // 생성 시 현재 체력/기력과 최대 체력/기력은 같은 수치를 가진다.
             _currentSP = _maxSP = sp;
